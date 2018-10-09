@@ -50,25 +50,6 @@ class MainActivity : AppCompatActivity()
         getMeme()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean
-    {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId)
-        {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     private fun showMeme(meme: Meme)
     {
         currentMeme = meme
@@ -103,6 +84,8 @@ class MainActivity : AppCompatActivity()
 
                 if (response.isSuccessful)
                 {
+                    var gotMeme = false
+
                     val iterator = response.body().iterator()
                     iterator.forEach {
                         if (!it.data.children.isEmpty())
@@ -111,17 +94,19 @@ class MainActivity : AppCompatActivity()
                             childIterator.forEach {
 
                                 val item = it.data
-                                if (!item.url.isBlank())
+                                if (item.title != null && item.url != null)
                                 {
+                                    gotMeme = true
                                     println(item.title)
                                     uiThread {
                                         showMeme(item)
                                     }
                                 }
-
                             }
                         }
                     }
+
+                    if(!gotMeme) getMeme()
                 }
                 else
                 {
@@ -132,6 +117,8 @@ class MainActivity : AppCompatActivity()
             }
             catch(e: Exception)
             {
+                println(e.message)
+
                 uiThread {
                     swipeRefresh.isRefreshing = false
                     showOffline()
