@@ -1,9 +1,9 @@
 package com.gsdan.prequelmemes
 
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
 class RestAPI()

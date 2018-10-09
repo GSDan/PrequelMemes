@@ -4,16 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu
-import android.view.MenuItem
+import android.support.v7.app.AppCompatActivity
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.find
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
@@ -97,7 +94,6 @@ class MainActivity : AppCompatActivity()
                                 if (item.title != null && item.url != null)
                                 {
                                     gotMeme = true
-                                    println(item.title)
                                     uiThread {
                                         showMeme(item)
                                     }
@@ -117,8 +113,6 @@ class MainActivity : AppCompatActivity()
             }
             catch(e: Exception)
             {
-                println(e.message)
-
                 uiThread {
                     swipeRefresh.isRefreshing = false
                     showOffline()
