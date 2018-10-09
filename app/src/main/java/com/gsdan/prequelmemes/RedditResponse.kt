@@ -16,7 +16,7 @@ class Meme(
         val is_video: Boolean,
         val permalink: String,
         val created_utc: Long,
-        val ups: Int,
-        val downs: Int,
+        val upvote_ratio: Float,
+        val score: Int,
         val url: String
 )

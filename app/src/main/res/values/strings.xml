@@ -3,6 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_placeholder">Hello there</string>
     <string name="desc_title">Meme title</string>
-    <string name="author">Submitted by %s on %s</string>
+    <string name="author">%s on %s</string>
+    <string name="score">Score: %s</string>
     <string name="desc_imageView">This bad boy can fit so many fucking memes in it</string>
 </resources>
