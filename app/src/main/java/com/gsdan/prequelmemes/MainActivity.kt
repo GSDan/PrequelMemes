@@ -14,13 +14,13 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
+import org.jetbrains.anko.longToast
 import org.jetbrains.anko.uiThread
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity()
 {
-
     private val api: RestAPI = RestAPI()
     private lateinit var titleView: TextView
     private lateinit var authorView: TextView
@@ -88,37 +88,53 @@ class MainActivity : AppCompatActivity()
 
     private fun getMeme()
     {
-
         swipeRefresh.isRefreshing = true
 
         doAsync {
-            val callResponse = api.getRandom()
-            val response = callResponse.execute()
 
-            uiThread {
-                swipeRefresh.isRefreshing = false
-            }
-
-            if (response.isSuccessful)
+            try
             {
-                val iterator = response.body().iterator()
-                iterator.forEach {
-                    if (!it.data.children.isEmpty())
-                    {
-                        var childIterator = it.data.children.iterator()
-                        childIterator.forEach {
+                val callResponse = api.getRandom()
+                val response = callResponse.execute()
 
-                            val item = it.data
-                            if (!item.url.isBlank())
-                            {
-                                println(item.title)
-                                uiThread {
-                                    showMeme(item)
+                uiThread {
+                    swipeRefresh.isRefreshing = false
+                }
+
+                if (response.isSuccessful)
+                {
+                    val iterator = response.body().iterator()
+                    iterator.forEach {
+                        if (!it.data.children.isEmpty())
+                        {
+                            var childIterator = it.data.children.iterator()
+                            childIterator.forEach {
+
+                                val item = it.data
+                                if (!item.url.isBlank())
+                                {
+                                    println(item.title)
+                                    uiThread {
+                                        showMeme(item)
+                                    }
                                 }
-                            }
 
+                            }
                         }
                     }
+                }
+                else
+                {
+                    uiThread {
+                        showOffline()
+                    }
+                }
+            }
+            catch(e: Exception)
+            {
+                uiThread {
+                    swipeRefresh.isRefreshing = false
+                    showOffline()
                 }
             }
         }
@@ -132,5 +148,23 @@ class MainActivity : AppCompatActivity()
         val uris = Uri.parse("https://www.reddit.com" + thisMeme.permalink)
         val intent = Intent(Intent.ACTION_VIEW, uris)
         startActivity(intent)
+    }
+
+    private fun showOffline()
+    {
+        longToast(R.string.offlineErr)
+
+        val baseMessage = getString(R.string.offlineTitle)
+
+        if((0..1).shuffled().last() == 0)
+        {
+            titleView.text = String.format(baseMessage, getString(R.string.offlineMessage1))
+            Picasso.get().load(R.drawable.offline1).into(imageView)
+        }
+        else
+        {
+            titleView.text = String.format(baseMessage, getString(R.string.offlineMessage2))
+            Picasso.get().load(R.drawable.offline2).into(imageView)
+        }
     }
 }

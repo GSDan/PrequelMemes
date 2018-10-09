@@ -5,5 +5,5 @@ import retrofit2.http.GET
 
 interface  RedditApi {
     @GET("random.json")
-    fun getRandom() : Call<List<RedditRandomResponseItem>>;
+    fun getRandom() : Call<List<RedditRandomResponseItem>>
 }
